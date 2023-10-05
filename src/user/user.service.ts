@@ -9,8 +9,14 @@ import { ApiErrorCode } from './../common/enums/api-error-code.enum'
 export class UserService {
   constructor(private prismaService: PrismaService) {}
   
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const user = await this.prismaService.user.create({
+      data: {
+        email: createUserDto.email,
+        password:  createUserDto.password
+      }
+    })
+    return user
   }
 
   async findAll() {
