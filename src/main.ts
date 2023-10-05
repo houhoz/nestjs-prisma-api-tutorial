@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(new ValidationPipe({
-    whitelist: true
+    whitelist: true // 过滤其他不需要的参数
   }))
   await app.listen(3000);
 }

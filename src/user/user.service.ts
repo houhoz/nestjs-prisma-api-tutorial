@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,13 +11,24 @@ export class UserService {
   constructor(private prismaService: PrismaService) {}
   
   async create(createUserDto: CreateUserDto) {
-    const user = await this.prismaService.user.create({
-      data: {
-        email: createUserDto.email,
-        password:  createUserDto.password
-      }
-    })
-    return user
+    try {
+      const user = await this.prismaService.user.create({
+        data: {
+          email: createUserDto.email,
+          password:  createUserDto.password
+        }
+      })
+      delete user.password
+      return user
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ForbiddenException('邮箱重复' )
+        }
+      } 
+      throw error
+    }
+
   }
 
   async findAll() {
