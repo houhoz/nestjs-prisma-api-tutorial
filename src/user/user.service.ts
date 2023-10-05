@@ -33,7 +33,11 @@ export class UserService {
 
   async findAll() {
     // throw new ApiException('用户不存在', ApiErrorCode.USER_NOTEXIST);
-    const list = await this.prismaService.user.findMany();
+    const list = await this.prismaService.user.findMany({
+      // include: {
+      //   posts: true,
+      // },
+    });
     return list;
   }
 

@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiException } from './api.exception';
 // 一个异常过滤器进行自定义的操作
@@ -21,11 +26,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
+    console.log('exception.getResponse() ', exception.getResponse());
+
     response.status(status).json({
       code: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: (exception.getResponse() as any).message
+      message: (exception.getResponse() as any)?.message || exception.message,
     });
   }
 }
