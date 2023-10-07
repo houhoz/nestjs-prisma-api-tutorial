@@ -8,4 +8,10 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: '密码不能为空' })
   password: string;
+
+  @IsString({ each: true })
+  roleIds: string[];
+
+  @IsString()
+  name?: string;
 }

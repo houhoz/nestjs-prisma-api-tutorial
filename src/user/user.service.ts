@@ -1,8 +1,7 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 // import { ApiException } from './../common/filter/http-exception/api.exception';
 // import { ApiErrorCode } from './../common/enums/api-error-code.enum';
 import { encrypt } from './../utils';
@@ -13,10 +12,20 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      const roles = await this.prismaService.role.findMany({
+        where: {
+          id: { in: createUserDto.roleIds },
+        },
+      });
+
+      const roleIds = roles.map((item) => item.id);
+
       const user = await this.prismaService.user.create({
         data: {
           email: createUserDto.email,
           password: encrypt(createUserDto.password),
+          roleIds: roleIds,
+          name: createUserDto?.name || '',
         },
       });
       delete user.password;

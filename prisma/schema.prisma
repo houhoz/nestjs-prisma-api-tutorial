@@ -27,10 +27,14 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   email    String   @unique
-  password String   
+  password String
   name     String?
   address  Address?
-  posts    Post[]
+
+  posts Post[]
+
+  roleIds String[] @db.ObjectId
+  roles   Role[]   @relation(fields: [roleIds], references: [id])
 }
 
 model Comment {
@@ -48,4 +52,30 @@ type Address {
   city   String
   state  String
   zip    String
+}
+
+model Role {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  name String @unique
+
+  permissionIds String[]     @db.ObjectId
+  permissions   Permission[] @relation(fields: [permissionIds], references: [id])
+
+  userIds String[] @db.ObjectId
+  users   User[]   @relation(fields: [userIds], references: [id])
+}
+
+model Permission {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  name String @unique
+  desc String
+
+  roleIds String[] @db.ObjectId
+  roles   Role[]   @relation(fields: [roleIds], references: [id])
 }
