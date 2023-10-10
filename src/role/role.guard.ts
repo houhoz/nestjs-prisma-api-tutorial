@@ -28,7 +28,7 @@ export class RoleGuard implements CanActivate {
 
     const request: CusRequest = context.switchToHttp().getRequest();
 
-    console.log('request', request?.user);
+    // console.log('request', request?.user);
 
     // request {
     //   sub: '6520b93b831e43015766e955',

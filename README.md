@@ -45,6 +45,14 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## Prisma
+
+```bash
+# 预览数据库
+npx prisma studio
+
+```
+
 ## Test
 
 ```bash
